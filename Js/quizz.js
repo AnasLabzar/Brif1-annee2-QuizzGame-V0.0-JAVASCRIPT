@@ -5,6 +5,8 @@ const choices = document.querySelectorAll('.choice-text');
 const progressBarFull = document.querySelector('#progressBarFull');
 const InputName = document.getElementById('InputName')
 const SubmitScore = document.getElementById('SubmitScore')
+const highscore = document.getElementById('highscore')
+
 
 let currentQuestion = {}
 let acceptingAnswers = true
@@ -80,7 +82,7 @@ let questions = [
     {
         question: 'what is 20 + 201',
         choice1: '2',
-        choice2: '4',
+        choice2: '221',
         choice3: '21',
         choice4: '17',
         answer: 2,
@@ -88,7 +90,7 @@ let questions = [
     {
         question: 'what is 90 + 2',
         choice1: '2',
-        choice2: '4',
+        choice2: '92',
         choice3: '21',
         choice4: '17',
         answer: 2,
@@ -102,12 +104,12 @@ let questions = [
         answer: 2,
     },
     {
-        question: 'what is 2 + 2',
+        question: 'what is 2 + 15',
         choice1: '2',
         choice2: '4',
         choice3: '21',
         choice4: '17',
-        answer: 2,
+        answer: 4,
     },
 
 ]
@@ -204,14 +206,57 @@ startScore = () =>{
 }
 
 
+const setNameWithScore = (name,scr)=>{
+    let players = localStorage.getItem("players") ? JSON.parse(localStorage.getItem("players")) : []
+
+    let player = {
+        name,
+        scr
+    }
+
+    players.push(player)
+    localStorage.setItem("players",JSON.stringify(players))
+}
 
 
 SubmitScore.addEventListener("click",()=>{
     setNameWithScore(InputName.value,score)
-  console.log(localStorage.getItem(setNameWithScore))  
+    displayScore()
+    score = 0
+    
 })
 
-const setNameWithScore = (InputName,Score)=>{
-    localStorage.setItem(InputName,Score)
+
+const displayScore = ()=>{
+
+    let players =  localStorage.getItem("players") ? JSON.parse(localStorage.getItem("players")) : null
+
+    if(players){
+        highscore.innerHTML =""
+        let result = players.sort((player1,player2) => player1.scr - player2.scr).reverse()
+        console.log(result);
+        result.forEach((elm,idx)=>{
+            let percnetage = 80 - idx*(80/result.length)
+            highscore.innerHTML += `
+            <span style="display:flex ; justify-content : space-between; align-items : center">
+            <h1 style="font-size :  ${percnetage}px">${elm.name } </h1> <h3>${elm.scr }</h3>
+            </span>
+            <a class="coolBeans" href="/"><i class="bi bi-box-arrow-in-left"></i></a>
+            `
+        })    
+        }
 }
 
+displayScore()
+
+
+// for (let i = 0; i < localStorage.length * 2; i++){
+//     let singleName = localStorage.getItem(condidatName.key(i))
+//     let singleScore = localStorage.getItem(condidatScore.key(i))
+//     allCondidatsNames.push(singleName);
+//     allCondidatsScore.push(singleScore);
+// }
+
+
+// console.log(allCondidatsNames);
+// console.log(allCondidatsScore);
